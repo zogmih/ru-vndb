@@ -34,38 +34,31 @@ h1 {
     background-color: #f0f0f0;
 }
 
+.game-details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
 .game-details-table {
-    width: 100%;
-    border-collapse: collapse;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
     margin-top: 20px;
 }
 
 .key {
     font-weight: bold;
     padding: 10px;
-    text-align: left;
     background-color: #f0f0f0;
 }
 
 .value {
     padding: 10px;
-    text-align: left;
 }
 
-@media (min-width: 768px) {
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .suggestion {
-        width: 50%;
-        display: inline-block;
-        margin-right: 5px;
-    }
-
+@media (max-width: 767px) {
     .game-details-table {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr;
     }
 }
