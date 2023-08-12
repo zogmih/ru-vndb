@@ -1,80 +1,103 @@
-const gameNameInput = document.getElementById("game-name");
-const suggestionsDiv = document.getElementById("suggestions");
+const suggestionsContainer = document.getElementById('suggestions');
+const gameDetailsTable = document.getElementById('gameDetailsTable');
 
-gameNameInput.addEventListener("input", function() {
-  const inputText = gameNameInput.value.toLowerCase();
+let currentSearchQuery = '';
+let database = [];
 
-  fetch("bd.json")
+// Загружаем файл bd.json
+fetch('bd.json')
     .then(response => response.json())
     .then(data => {
-      const matchingSuggestions = data
-        .map(item => item["Название новеллы"])
-        .filter(name => name.toLowerCase().includes(inputText));
-
-      displaySuggestions(matchingSuggestions);
+        database = data; // Загруженные данные сохраняем в переменной database
+        initializeSearch(); // Вызываем функцию инициализации поиска после загрузки данных
     })
     .catch(error => {
-      console.error("Ошибка при загрузке данных:", error);
+        console.error('Error loading bd.json:', error);
     });
-});
 
-function displaySuggestions(suggestions) {
-  suggestionsDiv.innerHTML = "";
-  suggestionsDiv.style.display = suggestions.length > 0 ? "block" : "none";
+function initializeSearch() {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
+        const inputValue = searchInput.value.trim().toLowerCase();
+        suggestionsContainer.innerHTML = '';
+        clearGameDetails();
+        currentSearchQuery = inputValue;
 
-  suggestions.forEach(suggestion => {
-    const suggestionDiv = document.createElement("div");
-    suggestionDiv.className = "suggestion";
-    suggestionDiv.textContent = suggestion;
-    suggestionDiv.addEventListener("click", () => {
-      gameNameInput.value = suggestion;
-      suggestionsDiv.style.display = "none";
+        if (inputValue.length === 0) {
+            return;
+        }
+
+        const uniqueGames = new Set();
+        database.forEach(game => {
+            if (game['Название новеллы'].toLowerCase().includes(inputValue)) {
+                uniqueGames.add(game['Название новеллы']);
+            }
+        });
+
+        uniqueGames.forEach(gameName => {
+            const suggestion = document.createElement('div');
+            suggestion.classList.add('suggestion');
+            suggestion.textContent = gameName;
+
+            suggestion.addEventListener('click', () => {
+                const gameDetailsArray = database.filter(game => game['Название новеллы'] === gameName);
+                displayGameDetails(gameDetailsArray);
+                suggestionsContainer.innerHTML = '';
+            });
+
+            suggestionsContainer.appendChild(suggestion);
+        });
     });
-    suggestionsDiv.appendChild(suggestionDiv);
-  });
 }
 
-document.getElementById("search-form").addEventListener("submit", function(event) {
-  event.preventDefault();
-  suggestionsDiv.style.display = "none";
-  
-  const gameName = gameNameInput.value.toLowerCase();
+function displayGameDetails(gameDetailsArray) {
+    clearGameDetails();
 
-  fetch("bd.json")
-    .then(response => response.json())
-    .then(data => {
-      const matchingGames = data.filter(item => item["Название новеллы"].toLowerCase().includes(gameName));
-      
-      if (matchingGames.length > 0) {
-        displayMatchingGames(matchingGames);
-      } else {
-        document.getElementById("result").style.display = "none";
-        alert("Игры не найдены");
-      }
-    })
-    .catch(error => {
-      console.error("Ошибка при загрузке данных:", error);
+    gameDetailsArray.forEach(game => {
+        const table = document.createElement('table');
+        table.classList.add('game-details-table');
+
+        for (const key in game) {
+            if (
+                key !== 'Название новеллы' &&
+                key !== 'Страница новеллы' &&
+                key !== 'Рейтинг новеллы' &&
+                key !== 'Картинка' &&
+                key !== 'Возрастной рейтинг' &&
+                key !== 'Длительность' &&
+                key !== 'Описание новеллы'
+            ) {
+                const row = document.createElement('tr');
+                const keyCell = document.createElement('td');
+                const valueCell = document.createElement('td');
+                keyCell.classList.add('key');
+                valueCell.classList.add('value');
+
+                if (key === 'Дата релиза') {
+                    valueCell.textContent = formatDate(game[key]);
+                } else {
+                    valueCell.innerHTML = game[key];
+                }
+
+                keyCell.textContent = key;
+                row.appendChild(keyCell);
+                row.appendChild(valueCell);
+                table.appendChild(row);
+            }
+        }
+
+        gameDetailsTable.appendChild(table);
     });
-});
+}
 
-function displayMatchingGames(matchingGames) {
-  const resultDiv = document.getElementById("result");
-  resultDiv.style.display = "block";
-  resultDiv.innerHTML = "";
+function clearGameDetails() {
+    gameDetailsTable.innerHTML = '';
+}
 
-  matchingGames.forEach(game => {
-    const gameDiv = document.createElement("div");
-    gameDiv.className = "game";
-
-    for (const key in game) {
-      if (game.hasOwnProperty(key)) {
-        const value = game[key];
-        const keyValueElement = document.createElement("p");
-        keyValueElement.textContent = `${key}: ${value}`;
-        gameDiv.appendChild(keyValueElement);
-      }
-    }
-
-    resultDiv.appendChild(gameDiv);
-  });
+function formatDate(dateString) {
+    const dateStringStr = dateString.toString();
+    const year = dateStringStr.substring(0, 4);
+    const month = dateStringStr.substring(4, 6);
+    const day = dateStringStr.substring(6, 8);
+    return `${day}-${month}-${year}`;
 }
