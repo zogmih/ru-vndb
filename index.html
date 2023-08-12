@@ -11,6 +11,16 @@
   #search-form {
     margin: 20px;
   }
+  #suggestions {
+    display: none;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  .suggestion {
+    padding: 5px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -20,13 +30,51 @@
     <input type="text" id="game-name" required>
     <button type="submit">Поиск</button>
   </form>
+  <div id="suggestions"></div>
   <div id="result" style="display: none;"></div>
 
   <script>
+    const gameNameInput = document.getElementById("game-name");
+    const suggestionsDiv = document.getElementById("suggestions");
+
+    gameNameInput.addEventListener("input", function() {
+      const inputText = gameNameInput.value.toLowerCase();
+
+      fetch("bd.json")
+        .then(response => response.json())
+        .then(data => {
+          const matchingSuggestions = data
+            .map(item => item["Название новеллы"])
+            .filter(name => name.toLowerCase().includes(inputText));
+
+          displaySuggestions(matchingSuggestions);
+        })
+        .catch(error => {
+          console.error("Ошибка при загрузке данных:", error);
+        });
+    });
+
+    function displaySuggestions(suggestions) {
+      suggestionsDiv.innerHTML = "";
+      suggestionsDiv.style.display = suggestions.length > 0 ? "block" : "none";
+
+      suggestions.forEach(suggestion => {
+        const suggestionDiv = document.createElement("div");
+        suggestionDiv.className = "suggestion";
+        suggestionDiv.textContent = suggestion;
+        suggestionDiv.addEventListener("click", () => {
+          gameNameInput.value = suggestion;
+          suggestionsDiv.style.display = "none";
+        });
+        suggestionsDiv.appendChild(suggestionDiv);
+      });
+    }
+
     document.getElementById("search-form").addEventListener("submit", function(event) {
       event.preventDefault();
+      suggestionsDiv.style.display = "none";
       
-      const gameName = document.getElementById("game-name").value.toLowerCase();
+      const gameName = gameNameInput.value.toLowerCase();
 
       fetch("bd.json")
         .then(response => response.json())
