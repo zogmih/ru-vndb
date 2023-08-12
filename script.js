@@ -4,6 +4,19 @@ const gameDetailsContainer = document.getElementById('gameDetailsContainer');
 
 searchInput.addEventListener('input', handleInput);
 
+let database = [];
+
+async function fetchDatabase() {
+    try {
+        const response = await fetch('bd.json');
+        database = await response.json();
+    } catch (error) {
+        console.error('Error fetching database:', error);
+    }
+}
+
+fetchDatabase();
+
 function handleInput() {
     const query = searchInput.value.toLowerCase();
     if (query.length === 0) {
@@ -11,17 +24,8 @@ function handleInput() {
         return;
     }
 
-    fetchSuggestions(query);
-}
-
-async function fetchSuggestions(query) {
-    try {
-        const response = await fetch(`get_games.php?query=${query}`);
-        const data = await response.json();
-        displaySuggestions(data);
-    } catch (error) {
-        console.error('Error fetching suggestions:', error);
-    }
+    const matchingGames = database.filter(game => game['Название новеллы'].toLowerCase().includes(query));
+    displaySuggestions(matchingGames);
 }
 
 function displaySuggestions(suggestionsArray) {
@@ -38,13 +42,8 @@ function displaySuggestions(suggestionsArray) {
 }
 
 async function fetchGameDetails(name) {
-    try {
-        const response = await fetch(`get_game_details.php?name=${encodeURIComponent(name)}`);
-        const data = await response.json();
-        displayGameDetails(data);
-    } catch (error) {
-        console.error('Error fetching game details:', error);
-    }
+    const matchingGames = database.filter(game => game['Название новеллы'] === name);
+    displayGameDetails(matchingGames);
 }
 
 function displayGameDetails(gameDetailsArray) {
@@ -55,17 +54,19 @@ function displayGameDetails(gameDetailsArray) {
 
     gameDetailsArray.forEach(game => {
         for (const key in game) {
-            const keyElement = document.createElement('div');
-            const valueElement = document.createElement('div');
+            if (key !== 'Название новеллы' && key !== 'Страница новеллы') {
+                const keyElement = document.createElement('div');
+                const valueElement = document.createElement('div');
 
-            keyElement.classList.add('key');
-            valueElement.classList.add('value');
+                keyElement.classList.add('key');
+                valueElement.classList.add('value');
 
-            keyElement.textContent = key;
-            valueElement.innerHTML = game[key] || 'Отсутствует';
+                keyElement.textContent = key;
+                valueElement.innerHTML = game[key] || 'Отсутствует';
 
-            gameDetails.appendChild(keyElement);
-            gameDetails.appendChild(valueElement);
+                gameDetails.appendChild(keyElement);
+                gameDetails.appendChild(valueElement);
+            }
         }
     });
 
