@@ -94,18 +94,8 @@ function displayGameDetails(gameDetailsArray) {
     gameDetailsTable.appendChild(table);
 }
 
-
-
 function clearGameDetails() {
     gameDetailsTable.innerHTML = '';
-}
-
-function formatDate(dateString) {
-    const dateStringStr = dateString.toString();
-    const year = dateStringStr.substring(0, 4);
-    const month = dateStringStr.substring(4, 6);
-    const day = dateStringStr.substring(6, 8);
-    return `${day}-${month}-${year}`;
 }
 
 // Остальные функции здесь
