@@ -57,29 +57,36 @@ function displayGameDetails(gameDetailsArray) {
     table.classList.add('game-details-table');
 
     gameDetailsArray.forEach(game => {
+        const keysToExclude = [
+            'Название новеллы',
+            'Страница новеллы',
+            'Рейтинг новеллы',
+            'Картинка',
+            'Возрастной рейтинг',
+            'Длительность',
+            'Описание новеллы',
+            'Дата релиза'
+        ];
+
         const row = document.createElement('tr');
-        
+
         for (const key in game) {
-            if (
-                key !== 'Название новеллы' &&
-                key !== 'Страница новеллы' &&
-                key !== 'Рейтинг новеллы' &&
-                key !== 'Картинка' &&
-                key !== 'Возрастной рейтинг' &&
-                key !== 'Длительность' &&
-                key !== 'Описание новеллы' &&
-                key !== 'Дата релиза'
-            ) {
+            if (!keysToExclude.includes(key)) {
                 const keyCell = document.createElement('td');
                 const valueCell = document.createElement('td');
                 keyCell.classList.add('key');
                 valueCell.classList.add('value');
-                
+
                 keyCell.textContent = key;
                 valueCell.innerHTML = game[key] || 'Отсутствует';
-                
+
                 row.appendChild(keyCell);
                 row.appendChild(valueCell);
+
+                if (row.children.length >= 6) {
+                    table.appendChild(row);
+                    row = document.createElement('tr');
+                }
             }
         }
 
@@ -88,6 +95,7 @@ function displayGameDetails(gameDetailsArray) {
 
     gameDetailsTable.appendChild(table);
 }
+
 
 function clearGameDetails() {
     gameDetailsTable.innerHTML = '';
