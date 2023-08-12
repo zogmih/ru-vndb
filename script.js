@@ -64,16 +64,15 @@ function displayGameDetails(gameDetailsArray) {
             'Картинка',
             'Возрастной рейтинг',
             'Длительность',
-            'Описание новеллы',
-            'Дата релиза'
+            'Описание новеллы'
         ];
-
-        const row = document.createElement('tr');
 
         for (const key in game) {
             if (!keysToExclude.includes(key)) {
+                const row = document.createElement('tr');
                 const keyCell = document.createElement('td');
                 const valueCell = document.createElement('td');
+
                 keyCell.classList.add('key');
                 valueCell.classList.add('value');
 
@@ -83,18 +82,18 @@ function displayGameDetails(gameDetailsArray) {
                 row.appendChild(keyCell);
                 row.appendChild(valueCell);
 
-                if (row.children.length >= 6) {
-                    table.appendChild(row);
-                    row = document.createElement('tr');
+                if (table.children.length % 3 === 0) {
+                    table.appendChild(document.createElement('tr')); // Добавляем новую строку после каждых 3 столбцов
                 }
+
+                table.lastElementChild.appendChild(row);
             }
         }
-
-        table.appendChild(row);
     });
 
     gameDetailsTable.appendChild(table);
 }
+
 
 
 function clearGameDetails() {
