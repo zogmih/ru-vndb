@@ -1,61 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Database Web Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        #output {
-            white-space: pre-wrap;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Поиск игры</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  #search-form {
+    margin: 20px;
+  }
+</style>
 </head>
 <body>
-    <h1>JSON Database Web Page</h1>
-    
-    <div>
-        <button onclick="loadDatabase()">Load Database</button>
-        <button onclick="saveDatabase()">Save Database</button>
-    </div>
-    
-    <div>
-        <h2>Database Content:</h2>
-        <textarea id="output" rows="10" cols="50"></textarea>
-    </div>
-    
-    <script>
-        let database = {};
+  <h1>Поиск игры</h1>
+  <form id="search-form">
+    <label for="game-name">Введите название игры:</label>
+    <input type="text" id="game-name" required>
+    <button type="submit">Поиск</button>
+  </form>
+  <div id="result" style="display: none;"></div>
 
-        function loadDatabase() {
-            fetch('bd.json')
-                .then(response => response.json())
-                .then(data => {
-                    database = data;
-                    document.getElementById('output').value = JSON.stringify(data, null, 2);
-                })
-                .catch(error => {
-                    console.error('Error loading database:', error);
-                });
-        }
+  <script>
+    document.getElementById("search-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      
+      const gameName = document.getElementById("game-name").value;
 
-        function saveDatabase() {
-            const content = document.getElementById('output').value;
-            try {
-                database = JSON.parse(content);
-                const blob = new Blob([JSON.stringify(database)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'bd.json';
-                a.click();
-                URL.revokeObjectURL(url);
-            } catch (error) {
-                console.error('Error saving database:', error);
-            }
+      fetch("bd.json")
+        .then(response => response.json())
+        .then(data => {
+          const game = data.find(item => item["Название новеллы"] === gameName);
+          
+          if (game) {
+            displayGameInfo(game);
+          } else {
+            document.getElementById("result").style.display = "none";
+            alert("Игра не найдена");
+          }
+        })
+        .catch(error => {
+          console.error("Ошибка при загрузке данных:", error);
+        });
+    });
+
+    function displayGameInfo(game) {
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = "";
+
+      for (const key in game) {
+        if (game.hasOwnProperty(key)) {
+          const value = game[key];
+          const keyValueElement = document.createElement("p");
+          keyValueElement.textContent = `${key}: ${value}`;
+          resultDiv.appendChild(keyValueElement);
         }
-    </script>
+      }
+    }
+  </script>
 </body>
 </html>
