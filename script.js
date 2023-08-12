@@ -56,34 +56,35 @@ function displayGameDetails(gameDetailsArray) {
     const table = document.createElement('table');
     table.classList.add('game-details-table');
 
-    const numberOfRows = Math.ceil(gameDetailsArray.length / 3);
-    for (let i = 0; i < numberOfRows; i++) {
+    gameDetailsArray.forEach(game => {
         const row = document.createElement('tr');
-
-        for (let j = 0; j < 3; j++) {
-            const gameIndex = i * 3 + j;
-            if (gameIndex < gameDetailsArray.length) {
-                const game = gameDetailsArray[gameIndex];
-
+        
+        for (const key in game) {
+            if (
+                key !== 'Название новеллы' &&
+                key !== 'Страница новеллы' &&
+                key !== 'Рейтинг новеллы' &&
+                key !== 'Картинка' &&
+                key !== 'Возрастной рейтинг' &&
+                key !== 'Длительность' &&
+                key !== 'Описание новеллы' &&
+                key !== 'Дата релиза'
+            ) {
                 const keyCell = document.createElement('td');
                 const valueCell = document.createElement('td');
                 keyCell.classList.add('key');
                 valueCell.classList.add('value');
-
-                if (game['Дата релиза']) {
-                    valueCell.textContent = formatDate(game['Дата релиза']);
-                } else {
-                    valueCell.textContent = 'Отсутствует';
-                }
-
-                keyCell.textContent = 'Дата релиза';
+                
+                keyCell.textContent = key;
+                valueCell.innerHTML = game[key] || 'Отсутствует';
+                
                 row.appendChild(keyCell);
                 row.appendChild(valueCell);
             }
         }
 
         table.appendChild(row);
-    }
+    });
 
     gameDetailsTable.appendChild(table);
 }
@@ -99,3 +100,5 @@ function formatDate(dateString) {
     const day = dateStringStr.substring(6, 8);
     return `${day}-${month}-${year}`;
 }
+
+// Остальные функции здесь
