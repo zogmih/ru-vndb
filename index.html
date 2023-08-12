@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Database Web Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #output {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>JSON Database Web Page</h1>
+    
+    <div>
+        <button onclick="loadDatabase()">Load Database</button>
+        <button onclick="saveDatabase()">Save Database</button>
+    </div>
+    
+    <div>
+        <h2>Database Content:</h2>
+        <textarea id="output" rows="10" cols="50"></textarea>
+    </div>
+    
+    <script>
+        let database = {};
+
+        function loadDatabase() {
+            fetch('bd.json')
+                .then(response => response.json())
+                .then(data => {
+                    database = data;
+                    document.getElementById('output').value = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('Error loading database:', error);
+                });
+        }
+
+        function saveDatabase() {
+            const content = document.getElementById('output').value;
+            try {
+                database = JSON.parse(content);
+                const blob = new Blob([JSON.stringify(database)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'bd.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Error saving database:', error);
+            }
+        }
+    </script>
+</body>
+</html>
