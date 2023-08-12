@@ -16,7 +16,7 @@
 <body>
   <h1>Поиск игры</h1>
   <form id="search-form">
-    <label for="game-name">Введите название игры:</label>
+    <label for="game-name">Введите часть названия игры:</label>
     <input type="text" id="game-name" required>
     <button type="submit">Поиск</button>
   </form>
@@ -26,18 +26,18 @@
     document.getElementById("search-form").addEventListener("submit", function(event) {
       event.preventDefault();
       
-      const gameName = document.getElementById("game-name").value;
+      const gameName = document.getElementById("game-name").value.toLowerCase();
 
       fetch("bd.json")
         .then(response => response.json())
         .then(data => {
-          const game = data.find(item => item["Название новеллы"] === gameName);
+          const matchingGames = data.filter(item => item["Название новеллы"].toLowerCase().includes(gameName));
           
-          if (game) {
-            displayGameInfo(game);
+          if (matchingGames.length > 0) {
+            displayMatchingGames(matchingGames);
           } else {
             document.getElementById("result").style.display = "none";
-            alert("Игра не найдена");
+            alert("Игры не найдены");
           }
         })
         .catch(error => {
@@ -45,19 +45,26 @@
         });
     });
 
-    function displayGameInfo(game) {
+    function displayMatchingGames(matchingGames) {
       const resultDiv = document.getElementById("result");
       resultDiv.style.display = "block";
       resultDiv.innerHTML = "";
 
-      for (const key in game) {
-        if (game.hasOwnProperty(key)) {
-          const value = game[key];
-          const keyValueElement = document.createElement("p");
-          keyValueElement.textContent = `${key}: ${value}`;
-          resultDiv.appendChild(keyValueElement);
+      matchingGames.forEach(game => {
+        const gameDiv = document.createElement("div");
+        gameDiv.className = "game";
+
+        for (const key in game) {
+          if (game.hasOwnProperty(key)) {
+            const value = game[key];
+            const keyValueElement = document.createElement("p");
+            keyValueElement.textContent = `${key}: ${value}`;
+            gameDiv.appendChild(keyValueElement);
+          }
         }
-      }
+
+        resultDiv.appendChild(gameDiv);
+      });
     }
   </script>
 </body>
