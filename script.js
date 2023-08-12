@@ -55,6 +55,9 @@ function displayGameDetails(gameDetailsArray) {
     gameDetailsArray.forEach(game => {
         for (const key in game) {
             if (key !== 'Название новеллы' && key !== 'Страница новеллы') {
+                const keyValueElement = document.createElement('div');
+                keyValueElement.classList.add('key-value');
+
                 const keyElement = document.createElement('div');
                 const valueElement = document.createElement('div');
 
@@ -64,14 +67,17 @@ function displayGameDetails(gameDetailsArray) {
                 keyElement.textContent = key;
                 valueElement.innerHTML = game[key] || 'Отсутствует';
 
-                gameDetails.appendChild(keyElement);
-                gameDetails.appendChild(valueElement);
+                keyValueElement.appendChild(keyElement);
+                keyValueElement.appendChild(valueElement);
+
+                gameDetails.appendChild(keyValueElement);
             }
         }
     });
 
     gameDetailsContainer.appendChild(gameDetails);
 }
+
 
 function clearGameDetails() {
     gameDetailsContainer.innerHTML = '';
