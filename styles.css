@@ -40,30 +40,24 @@ h1 {
     padding: 20px;
 }
 
-.game-details-table {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+.game-details {
+    display: flex;
+    flex-direction: column;
     gap: 20px;
-    margin-top: 20px;
-    width: 100%;
-    border-collapse: collapse; /* Добавляем это свойство */
-    border: 1px solid #ccc; /* Добавляем границу */
 }
 
 .key {
     font-weight: bold;
     padding: 10px;
     background-color: #f0f0f0;
-    border-bottom: 1px solid #ccc; /* Добавляем нижнюю границу для ячеек ключей */
 }
 
 .value {
     padding: 10px;
-    border-bottom: 1px solid #ccc; /* Добавляем нижнюю границу для ячеек значений */
 }
 
 @media (max-width: 767px) {
-    .game-details-table {
-        grid-template-columns: 1fr;
+    .game-details {
+        flex-direction: column;
     }
 }
