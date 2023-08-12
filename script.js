@@ -53,41 +53,41 @@ function initializeSearch() {
 function displayGameDetails(gameDetailsArray) {
     clearGameDetails();
 
-    gameDetailsArray.forEach(game => {
-        const table = document.createElement('table');
-        table.classList.add('game-details-table');
+    const table = document.createElement('table');
+    table.classList.add('game-details-table');
 
-        for (const key in game) {
-            if (
-                key !== 'Название новеллы' &&
-                key !== 'Страница новеллы' &&
-                key !== 'Рейтинг новеллы' &&
-                key !== 'Картинка' &&
-                key !== 'Возрастной рейтинг' &&
-                key !== 'Длительность' &&
-                key !== 'Описание новеллы'
-            ) {
-                const row = document.createElement('tr');
+    const numberOfRows = Math.ceil(gameDetailsArray.length / 3);
+    for (let i = 0; i < numberOfRows; i++) {
+        const row = document.createElement('tr');
+
+        for (let j = 0; j < 3; j++) {
+            const gameIndex = i * 3 + j;
+            if (gameIndex < gameDetailsArray.length) {
+                const game = gameDetailsArray[gameIndex];
+
                 const keyCell = document.createElement('td');
                 const valueCell = document.createElement('td');
                 keyCell.classList.add('key');
                 valueCell.classList.add('value');
 
-                if (key === 'Дата релиза') {
-                    valueCell.textContent = formatDate(game[key]);
+                if (game['Дата релиза']) {
+                    valueCell.textContent = formatDate(game['Дата релиза']);
                 } else {
-                    valueCell.innerHTML = game[key];
+                    valueCell.textContent = 'Отсутствует';
                 }
 
-                keyCell.textContent = key;
+                keyCell.textContent = 'Дата релиза';
                 row.appendChild(keyCell);
                 row.appendChild(valueCell);
-                table.appendChild(row);
             }
         }
 
-        gameDetailsTable.appendChild(table);
-    });
+        table.appendChild(row);
+    }
+
+    gameDetailsTable.appendChild(table);
+}
+
 }
 
 function clearGameDetails() {
