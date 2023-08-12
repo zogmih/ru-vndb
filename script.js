@@ -79,20 +79,17 @@ function displayGameDetails(gameDetailsArray) {
                 keyCell.textContent = key;
                 valueCell.innerHTML = game[key] || 'Отсутствует';
 
+                table.appendChild(row);
+
                 row.appendChild(keyCell);
                 row.appendChild(valueCell);
-
-                if (table.children.length % 3 === 0) {
-                    table.appendChild(document.createElement('tr')); // Добавляем новую строку после каждых 3 столбцов
-                }
-
-                table.lastElementChild.appendChild(row);
             }
         }
     });
 
     gameDetailsTable.appendChild(table);
 }
+
 
 function clearGameDetails() {
     gameDetailsTable.innerHTML = '';
