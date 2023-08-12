@@ -88,8 +88,6 @@ function displayGameDetails(gameDetailsArray) {
     gameDetailsTable.appendChild(table);
 }
 
-}
-
 function clearGameDetails() {
     gameDetailsTable.innerHTML = '';
 }
