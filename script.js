@@ -54,7 +54,7 @@ function displayGameDetails(gameDetailsArray) {
 
     gameDetailsArray.forEach(game => {
         for (const key in game) {
-            if (key !== 'Название новеллы' && key !== 'Страница новеллы') {
+            if (!['Рейтинг новеллы', 'Картинка', 'Возрастной рейтинг', 'Длительность', 'Описание новеллы', 'Название новеллы', 'Страница новеллы'].includes(key)) {
                 const keyValueElement = document.createElement('div');
                 keyValueElement.classList.add('key-value');
 
@@ -77,6 +77,7 @@ function displayGameDetails(gameDetailsArray) {
 
     gameDetailsContainer.appendChild(gameDetails);
 }
+
 
 
 function clearGameDetails() {
