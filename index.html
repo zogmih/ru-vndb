@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Game Database</title>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+	  <p class="description">Эта страница работает с локальной базой данных VNDB по релизам на русском языке.</p>
+	  <br>
+      <p class="description">"Релизами" могут быть как сами новеллы, так и модификации, в том числе демки, другие издания и переводы на русский язык (полный или частичный).</p>
+      <br>
+	  <p class="description">Текущая база данных от 02/04/2024</p>
+	  <p class="description"><a href="https://github.com/zogmih/ru-vndb">Инструкция по обновлению.</a><p>
+    </header>
+    <main class="main">
+      <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Поиск по названию игры">
+        <ul id="suggestions"></ul>
+      </div>
+      <div class="buttons">
+        <button id="latestReleasesButton" class="action-button">Последние релизы</button>
+        <button id="bestNovelsButton" class="action-button">Лучшие новеллы на русском</button>
+      </div>
+      <div id="result" class="result"></div>
+    </main>
+    <footer class="footer">
+      <p>© 2024 База данных русскоязычных новелл</p>
+      <p><a href="https://github.com/zogmih/ru-vndb">Github open sourse</a></p>
+    </footer>
+  </div>
+  <script src="latestReleases.js"></script>
+  <script src="script.js"></script>
+  <script src="bestNovels.js"></script>
+</body>
+</html>
